@@ -14,10 +14,3 @@ emit Pod(
         }]
     }
 )
-
-emit {
-        name: "configuration"
-        data: {
-            id_rsa: import("static/id_rsa")
-        }
-    }
