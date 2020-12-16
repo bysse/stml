@@ -1,0 +1,40 @@
+#include <apiv1.stml>
+
+struct ObjectMeta extends K8sName {
+    annotations         ?: Map
+    labels              ?: Map
+}
+
+enum ImagePullPolicy {
+    Always,
+    Never,
+    IfNotPresent
+}
+
+struct Container extends K8sName {
+    args?                   : List<String>
+    command?                : List<String>
+    env?                    : Map<String>
+    image                   : string
+    imagePullPolicy?        : ImagePullPolicy
+}
+
+struct ConfigMapSource extends K8sName {
+}
+
+struct Volume extends K8sName{
+    configMap               : ConfigMapSource
+}
+
+struct PodSpec {
+    activeDeadlineSeconds?  : number
+
+    containers?             : List<Container>
+    volumes?                : List<Volume>
+}
+
+struct Pod extends APIv1 {
+    kind                    : const : "Pod"
+    metadata?               : ObjectMeta
+    spec                    : PodSpec
+}

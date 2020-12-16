@@ -1,0 +1,8 @@
+struct APIv1 {
+    apiVersion  : const : "v1"
+    kind        : string
+}
+
+struct K8sName {
+    name        : string</[a-z0-9-.]+/>
+}

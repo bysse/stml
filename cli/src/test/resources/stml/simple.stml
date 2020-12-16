@@ -1,0 +1,41 @@
+enum Status { Ok; Error; }
+
+struct Request {
+    resource: String</[a-z\/]*/>;
+    payload:  String | Number : "";
+    headers:  Map<String>();
+}
+
+struct Response {
+    status:     Status = Status.Ok
+    size:       Number
+    payload:    *
+    headers:    Map<String>
+}
+
+struct StringResponse extends Response{
+    encoding: String = "UTF-8";
+}
+
+let response = StringResponse(
+   size: 4,
+   payload: const : "2020-02-20",
+   headers: Map(
+        Content-Type: "text/html"
+   ),
+);
+
+emit List(
+    Request(
+        resource: "/api/date",
+        payload: null
+    ),
+    Request(
+        resource: "/api/time",
+        payload: true
+    ));
+
+emit Map(
+    data: import(from: "imports")
+    )
+

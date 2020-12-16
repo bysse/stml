@@ -1,0 +1,5 @@
+enum MyEnum {
+    FirstConstant,
+    SecondConstant
+}
+emit MyEnum.FirstConstant

@@ -1,0 +1,4 @@
+subprojects {
+    group = "se.slackers.stml"
+    version = "1.0.0"
+}

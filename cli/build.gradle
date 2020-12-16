@@ -1,0 +1,90 @@
+plugins {
+    id 'java-library'
+    id 'antlr'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+}
+
+// work around for https://github.com/gradle/gradle/issues/820
+configurations {
+    implementation {
+        extendsFrom = extendsFrom.findAll { it != configurations.antlr }
+    }
+}
+
+jar {
+    archiveBaseName = "stml"
+
+    manifest {
+        attributes ('Main-Class': 'com.king.stml.Main', 'Implementation-Version': project.version)
+
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+    antlr "org.antlr:antlr4:4.+"
+
+    implementation "org.antlr:antlr4-runtime:4.+"
+
+    testImplementation 'org.mockito:mockito-core:3.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.+'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.+'
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.+'
+}
+
+test {
+    // Use junit platform for unit tests
+    useJUnitPlatform()
+}
+
+generateGrammarSource {
+    arguments += ['-package', 'se.slackers.stml', '-visitor']
+    outputDirectory = file("${projectDir}/generated-src/se/slackers/stml")
+}
+
+task cleanAntlr(type: Delete) {
+    delete file("${projectDir}/generated-src")
+}
+clean.dependsOn cleanAntlr
+
+sourceSets.main.java.srcDirs += file("${projectDir}/generated-src")
+
+import org.apache.tools.ant.filters.ReplaceTokens
+task copyScripts(type: Copy) {
+    from('src/main/resources/scripts/') {
+        filter(ReplaceTokens, tokens: [
+                version: project.version
+        ])
+    }
+    into "$buildDir/libs/"
+}
+
+task copyInstaller(type: Copy) {
+    from('src/build/scripts/') {
+        filter(ReplaceTokens, tokens: [
+                version: project.version
+        ])
+    }
+    into "$buildDir"
+}
+
+task buildinstaller(type: Exec) {
+    commandLine "./generate_installer.sh"
+}
+
+jar.dependsOn copyScripts
+jar.dependsOn copyInstaller
+copyScripts.dependsOn processResources
+copyInstaller.dependsOn processResources
+buildinstaller.dependsOn copyInstaller
+build.finalizedBy buildinstaller

@@ -1,0 +1,5 @@
+Line 1
+#include <file1.stml>
+Line 3
+import directory/file2.stml
+Line 5

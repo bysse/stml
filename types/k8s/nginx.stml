@@ -1,0 +1,23 @@
+#include <podv1.stml>
+
+emit Pod(
+    metadata: {
+        name: "some-nginx"
+        labels: {
+            name: "some-nginx"
+        }
+    }
+    spec: {
+        containers: [{
+            name: "nginx"
+            image: "launcher.gcr.io/google/nginx1"
+        }]
+    }
+)
+
+emit {
+        name: "configuration"
+        data: {
+            id_rsa: import("static/id_rsa")
+        }
+    }

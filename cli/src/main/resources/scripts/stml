@@ -1,0 +1,8 @@
+#!/bin/bash
+
+BIN="$0"
+[[ -L "$0" ]] && BIN=`readlink "$0"`
+DIR=`dirname ${BIN}`
+
+HEAP=64m
+java -Xmx$HEAP -Xms16m -jar $DIR/stml-@version@.jar $@

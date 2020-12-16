@@ -1,0 +1,9 @@
+---
+- reg: ABC123
+  type: Bike
+  weight: 256
+- reg: CAR123
+  type: Car
+  weight: 3150
+- type: Truck
+  weight: 16000
