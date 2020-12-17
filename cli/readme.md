@@ -39,6 +39,12 @@ the types even further:
     Map<SubType>
     String</REGEXP/>
 
+## Variables
+
+A variable is declared with the `let` keyword. The type of the variable will be the same as the value it's given.
+
+   let variable = 1
+
 
 ## Type Definitions
 
@@ -168,6 +174,22 @@ the map when you construct it.
         typed:   {"a":2, "b": 3}
     )
 
+To reference fields in a map just separate the field names with dots like this.
+
+    let example = MapStruct(
+        untyped: {"a":2, "b": 3}
+        typed:   {"a":2, "b": 3}
+    )
+    emit example.typed
+
+If you need to declare a field name that collides with a keyword you can wrap the field name
+with quotes.
+
+    let example = MapStruct(
+        "struct": 4
+    )
+    emit example."struct"
+
 ### Null
 
 The null type can only be assigned the value `NULL` or `null`.
@@ -291,7 +313,7 @@ produce this YAML.
     ---
     alphaNum: 5
 
-## Special Functions
+## Functions
 
 In this section a few special functions in STML are described. 
 

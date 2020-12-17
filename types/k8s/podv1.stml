@@ -22,7 +22,7 @@ struct Container extends K8sName {
 struct ConfigMapSource extends K8sName {
 }
 
-struct Volume extends K8sName{
+struct Volume extends K8sName {
     configMap               : ConfigMapSource
 }
 

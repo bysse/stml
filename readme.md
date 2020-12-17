@@ -3,6 +3,5 @@ STML is a meta-language with the sole purpose of reducing the pain you feel insi
 when reading and writing YAML.
 
 ## Modules
-
 ### cli
 Language definition and CLI tool.
