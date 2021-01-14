@@ -316,7 +316,7 @@ public class Main {
         out.println("optional arguments:");
         out.println("  -h, --help         Show this help screen.");
         out.println("  -c SHELL           Generate completion script for the given shell. \"source <(stml -c bash)\"");
-        out.println("  -kubectl           Generate plugin script for kubectl that should be placed somewhere on the path.");
+        out.println("  --kubectl          Generate plugin script for kubectl that should be placed somewhere on the path.");
         out.println("  -f FLAG            Set a transpiler options.");
         out.println("  -no                No output generated. Overrides all other output options.");
         out.println("  -o FILE            The output file to write to.");
