@@ -26,6 +26,12 @@ function help() {
     echo ""
     echo "All other options are passed straight to kubectl apply"
     echo ""
+    echo "Installation:"
+    echo "Install the plugin by copying it to the path with the name \"kubectl-stml\""
+    echo ""
+    echo "    stml --kubectl | sudo tee /usr/local/bin/kubectl-stml"
+    echo "    sudo chmod +x /usr/local/bin/kubectl-stml"
+    echo ""
 }
 
 if [ -z "$1" ]; then
