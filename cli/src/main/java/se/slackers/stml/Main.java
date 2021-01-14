@@ -225,16 +225,29 @@ public class Main {
         }
         Path path = Paths.get(output);
         if (!Files.isDirectory(path)) {
-            err.println("ERROR: Output needs to be a directory when processing multiple files!");
-            System.exit(1);
+            if (Files.exists(path)) {
+                err.println("ERROR: Output needs to be a directory when processing multiple files!");
+                System.exit(1);
+            }
+
+            if (!path.toFile().mkdirs()) {
+                err.println("ERROR: Failed to created output directory");
+                System.exit(1);
+            }
         }
+
+        Path cwd = Paths.get("").toAbsolutePath();
 
         for (String sourceFile : sources) {
             logger.info("Processing " + sourceFile);
             PreProcessor preProcessor = new PreProcessor();
 
             try {
-                preProcessor.process(Paths.get(sourceFile));
+                Path sourcePath = Paths.get(sourceFile);
+
+                out.println("Processing " + cwd.relativize(sourcePath.toAbsolutePath()));
+
+                preProcessor.process(sourcePath);
             } catch (STMLException e) {
                 reportError(e.getSourcePositionId(), e.getMessage());
                 logger.log(Level.SEVERE, e.getMessage(), e);
@@ -267,6 +280,7 @@ public class Main {
 
                 try {
                     Path outputFile = getOutputName(path, sourceFile);
+                    logger.info("Writing YAML to " + outputFile);
                     Files.write(outputFile, yaml.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
                     err.println("ERROR: Failed to write to " + output + ": " + e.getMessage());
@@ -284,11 +298,13 @@ public class Main {
     }
 
     private static Path getOutputName(Path path, String sourceFile) {
-        int index = sourceFile.lastIndexOf('.');
+        String filename = Paths.get(sourceFile).getFileName().toString();
+        int index = filename.lastIndexOf('.');
         if (index < 0) {
-            return path.resolve(sourceFile + ".yaml");
+            return path.resolve(filename + ".yaml");
         }
-        return path.resolve(sourceFile.substring(0, index) + ".yaml");
+        String yamlFile = filename.substring(0, index) + ".yaml";
+        return path.resolve(yamlFile);
     }
 
     private static void reportError(SourcePositionId position, String format, Object... args) {

@@ -22,7 +22,7 @@ function help() {
     echo ""
     echo "Options:"
     echo "  -f FILE     Compiles a STML file to YAML."
-    echo "  -d DIR      Compiles all STML files in a directory to YAML."
+    echo "  -k DIR      Compiles all STML files in a directory to YAML."
     echo ""
     echo "All other options are passed straight to kubectl apply"
     echo ""
@@ -59,11 +59,11 @@ if [ "$1" == "apply" ]; then
             exit 0            
             ;;
             -f)
-            FILE="$2"
+            FILE="$FILE $2"
             shift
             shift
             ;;
-            -d)
+            -k)
             DIR="$2"
             shift
             shift
@@ -79,27 +79,25 @@ if [ "$1" == "apply" ]; then
         mkdir -p "$TEMP_FOLDER"
     fi
 
-    if [ ! -z "$FILE" ]; then
-        echo "COMPILING STML:"
+    if [ -n "$FILE" ]; then
         FILENAME=$(basename "$FILE")
         OUTPUT="$TEMP_FOLDER/$FILENAME"        
-        echo "  $FILE"
-        stml -o "$OUTPUT" $FILE
-        kubectl apply -f $OUTPUT $ARGS
-    elif [ ! -z "$DIR" ]; then
+        echo "compiling $FILE"
+        stml -o "$OUTPUT" "$FILE"
+        kubectl apply -f "$OUTPUT" $ARGS
+        exit $?
+    elif [ -n "$DIR" ]; then
         if [ -d "$TEMP_FOLDER" ]; then
-            rm "./$TEMP_FOLDER/*"
+            rm -rf "./$TEMP_FOLDER"
+            mkdir $TEMP_FOLDER
         fi
 
-        echo "COMPILING STML:"
-        for file in $(ls -1 "$DIR" | grep ".stml$")
-        do
-            FILENAME=$(basename "$file")
-            OUTPUT="$TEMP_FOLDER/$FILENAME"        
-            echo "  $FILENAME"
-            stml -o "$OUTPUT" "$DIR/$file"
-        done
-        echo kubectl apply -d $TEMP_FOLDER $ARGS
+        DIR=$(readlink -f $DIR)
+        FILES=$(ls $DIR/*.stml)
+
+        stml -o "$TEMP_FOLDER" -s "$FILES"
+        kubectl apply -k "$TEMP_FOLDER" $ARGS
+        exit $?
     else
         echo "ERROR: None of the required flags -f and -d were specied!"
         echo ""
@@ -108,6 +106,12 @@ if [ "$1" == "apply" ]; then
     fi   
 fi
 
-
 echo "ERROR: Unrecognized command: $1"
 exit 1
+
+#
+# Install using:
+#
+#    stml --kubectl | sudo tee /usr/local/bin/kubectl-stml
+#    sudo chmod +x /usr/local/bin/kubectl-stml
+#
