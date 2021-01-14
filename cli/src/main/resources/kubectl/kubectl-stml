@@ -1,0 +1,57 @@
+#!/bin/bash
+
+TEMP_FOLDER=".stml"
+
+if [ "$1" == "apply" ]; then
+    FILE=""
+    DIR=""
+    ARGS=""
+
+    shift
+    while [[ $# -gt 0 ]]
+    do
+        case "$1" in
+            -f)
+            FILE="$2"
+            shift
+            shift
+            ;;
+            -d)
+            DIR="$2"
+            shift
+            shift
+            ;;
+            *)
+            ARGS="$ARGS $1"
+            shift
+            ;;
+        esac
+    done
+
+    if [ ! -d "$TEMP_FOLDER" ]; then
+        mkdir -p "$TEMP_FOLDER"
+    fi
+
+    if [ ! -z "$FILE" ]; then
+        echo "COMPILING STML:"
+        FILENAME=$(basename "$FILE")
+        OUTPUT="$TEMP_FOLDER/$FILENAME"        
+        echo "  $FILE"
+        stml -o "$OUTPUT" $FILE
+        kubectl apply -f $OUTPUT $ARGS
+    elif [ ! -z "$DIR" ]; then
+        if [ -d "$TEMP_FOLDER" ]; then
+            rm "./$TEMP_FOLDER/*"
+        fi
+
+        echo "COMPILING STML:"
+        for file in $(ls -1 "$DIR" | grep ".stml$")
+        do
+            FILENAME=$(basename "$file")
+            OUTPUT="$TEMP_FOLDER/$FILENAME"        
+            echo "  $FILENAME"
+            stml -o "$OUTPUT" "$DIR/$file"
+        done
+        echo kubectl apply -d $TEMP_FOLDER $ARGS
+    fi    
+fi

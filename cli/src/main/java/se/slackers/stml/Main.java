@@ -67,6 +67,9 @@ public class Main {
                     }
                     generateCompletion(args[arg]);
                     System.exit(0);
+                case "-kubectl":
+                    generateKubectl();
+                    System.exit(0);
                 case "-f":
                     arg++;
                     if (arg >= args.length) {
@@ -134,6 +137,23 @@ public class Main {
             }
         } catch (IOException e) {
             err.println("ERROR: Failed to produce completion script : " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    private static void generateKubectl() {
+        InputStream resource = Main.class.getClassLoader().getResourceAsStream("kubectl/kubectl-stml");
+        if (resource == null) {
+            err.println("ERROR: Unknown error when creating kubectl plugin");
+            System.exit(1);
+        }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                out.println(line);
+            }
+        } catch (IOException e) {
+            err.println("ERROR: Failed to produce kubectl plugin : " + e.getMessage());
             System.exit(1);
         }
     }
@@ -296,6 +316,7 @@ public class Main {
         out.println("optional arguments:");
         out.println("  -h, --help         Show this help screen.");
         out.println("  -c SHELL           Generate completion script for the given shell. \"source <(stml -c bash)\"");
+        out.println("  -kubectl           Generate plugin script for kubectl that should be placed somewhere on the path.");
         out.println("  -f FLAG            Set a transpiler options.");
         out.println("  -no                No output generated. Overrides all other output options.");
         out.println("  -o FILE            The output file to write to.");
