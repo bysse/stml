@@ -1,5 +1,5 @@
 function _stml_cmd() {
-  local ARGS="-h --help -c -f -no -o -s -version"
+  local ARGS="-h --help -c -f -no -o -s --version --kubectl"
   local SHELLS="bash"
   local FLAGS="render-null"
 
