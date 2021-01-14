@@ -4,4 +4,4 @@ when reading and writing YAML.
 
 ## Modules
 ### cli
-Language definition and CLI tool.
+[https://github.com/bysse/stml/tree/master/cli](Language definition and CLI tool.)
