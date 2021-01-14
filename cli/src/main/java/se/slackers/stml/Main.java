@@ -67,7 +67,7 @@ public class Main {
                     }
                     generateCompletion(args[arg]);
                     System.exit(0);
-                case "-kubectl":
+                case "--kubectl":
                     generateKubectl();
                     System.exit(0);
                 case "-f":
@@ -321,7 +321,7 @@ public class Main {
         out.println("  -no                No output generated. Overrides all other output options.");
         out.println("  -o FILE            The output file to write to.");
         out.println("  -s                 Treat each input as a separate file.");
-        out.println("  -version           Prints the current tool version.");
+        out.println("  --version          Prints the current tool version.");
         out.println();
         out.println("flags:");
         for (STMLFlag flag : STMLFlag.values()) {

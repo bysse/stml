@@ -5,12 +5,18 @@ type constructors.
 
 ## CLI
 
-The CLI tool is the main entrypoint for STML manipulation. The most useful switch is
-to invoke it with `-h` to get the help screen. The second most useful switch is to
+The CLI tool is the main entrypoint for STML manipulation. The most useful flag is
+to invoke it with `-h` to get the help screen. The second most useful flag is to
 generate auto completion for your shell (only bash supported).
 
     source <(stml -c bash)
 
+
+The third most useful flag is `--kubectl` which generates the kubectl plugin script. 
+To install the plugin use:
+
+    stml --kubectl | sudo tee /usr/local/bin/kubectl-stml 
+    sudo chmod +x /usr/local/bin/kubectl-stml
 
 ## Types
 

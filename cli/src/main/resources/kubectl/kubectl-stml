@@ -1,6 +1,43 @@
 #!/bin/bash
+#
+# kubectl plugin script for stml.
+# To install this script run the commands:
+#  
+#    stml --kubectl | sudo tee /usr/local/bin/kubectl-stml
+#    sudo chmod +x /usr/local/bin/kubectl-stml
+#
 
 TEMP_FOLDER=".stml"
+
+function help() {
+    VERSION=$(stml --version | cut -c 6-)
+    echo "kubectl STML plugin $VERSION"
+    echo ""
+    echo "The plugin is a STML compiler integration with kubectl to be able"
+    echo "remove extra steps from the work flow."
+    echo ""
+    echo "Apply:"
+    echo "The integation for the apply subcommand is doing an extra compilation step of "
+    echo "STML files into $TEMP_FOLDER. The results are then passed to kubctl apply"
+    echo ""
+    echo "Options:"
+    echo "  -f FILE     Compiles a STML file to YAML."
+    echo "  -d DIR      Compiles all STML files in a directory to YAML."
+    echo ""
+    echo "All other options are passed straight to kubectl apply"
+    echo ""
+}
+
+if [ -z "$1" ]; then
+    help   
+    exit 1 
+fi
+
+
+if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]] ; then
+    help
+    exit 0    
+fi
 
 if [ "$1" == "apply" ]; then
     FILE=""
@@ -11,6 +48,10 @@ if [ "$1" == "apply" ]; then
     while [[ $# -gt 0 ]]
     do
         case "$1" in
+            -h|--help)
+            help
+            exit 0            
+            ;;
             -f)
             FILE="$2"
             shift
@@ -53,5 +94,14 @@ if [ "$1" == "apply" ]; then
             stml -o "$OUTPUT" "$DIR/$file"
         done
         echo kubectl apply -d $TEMP_FOLDER $ARGS
-    fi    
+    else
+        echo "ERROR: None of the required flags -f and -d were specied!"
+        echo ""
+        help 
+        exit 1
+    fi   
 fi
+
+
+echo "ERROR: Unrecognized command: $1"
+exit 1
