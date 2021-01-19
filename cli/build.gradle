@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'antlr'
+    id "com.palantir.graal" version "0.7.2"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -30,6 +31,15 @@ jar {
     }
 }
 
+graal {
+    graalVersion '20.3.0'
+    mainClass 'se.slackers.stml.Main'
+    outputName 'stml'
+    //option '--verbose'
+    option '-H:ResourceConfigurationFiles=src/main/graal/resource-config.json'
+    option '-H:ReflectionConfigurationFiles=src/main/graal/reflection-config.json'
+}
+
 dependencies {
     antlr "org.antlr:antlr4:4.+"
 
@@ -43,7 +53,6 @@ dependencies {
 }
 
 test {
-    // Use junit platform for unit tests
     useJUnitPlatform()
 }
 
@@ -78,7 +87,7 @@ task copyInstaller(type: Copy) {
     into "$buildDir"
 }
 
-task buildinstaller(type: Exec) {
+task buildInstaller(type: Exec) {
     commandLine "./generate_installer.sh"
 }
 
@@ -86,5 +95,6 @@ jar.dependsOn copyScripts
 jar.dependsOn copyInstaller
 copyScripts.dependsOn processResources
 copyInstaller.dependsOn processResources
-buildinstaller.dependsOn copyInstaller
-build.finalizedBy buildinstaller
+buildInstaller.dependsOn copyInstaller
+buildInstaller.dependsOn nativeImage
+build.finalizedBy buildInstaller

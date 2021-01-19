@@ -30,8 +30,8 @@ import static java.lang.System.out;
 
 public class Main {
     static {
-        InputStream stream = Main.class.getClassLoader().getResourceAsStream("logging.properties");
         try {
+            InputStream stream = Main.class.getClassLoader().getResourceAsStream("logging.properties");
             LogManager.getLogManager().readConfiguration(stream);
         } catch (IOException e) {
             e.printStackTrace();

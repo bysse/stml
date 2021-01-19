@@ -1,0 +1,13 @@
+{
+  "resources": [
+    {
+      "pattern": "logging.properties"
+    },
+    {
+      "pattern": "completion/.*"
+    },
+    {
+      "pattern": "kubectl/.*"
+    }
+  ]
+}
