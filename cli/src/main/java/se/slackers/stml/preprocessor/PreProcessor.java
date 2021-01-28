@@ -25,6 +25,7 @@ public class PreProcessor {
     private final SourcePositionMapper mapper;
     private final StringBuilder content;
     private final Set<Path> pathSet;
+    private Path path;
 
     private int lineCount;
 
@@ -36,6 +37,7 @@ public class PreProcessor {
     }
 
     public void process(Path path) throws STMLException {
+        this.path = path;
         logger.info("Processing file " + path.toAbsolutePath());
         appendFile(content, path, null);
     }
@@ -43,6 +45,7 @@ public class PreProcessor {
     public Source getSource() {
         return new Source(
                 content.toString().trim(),
+                path,
                 mapper
         );
     }

@@ -10,5 +10,5 @@
 rootProject.name = 'stml'
 
 include "cli"
-include "language-server"
-//include "intellij-plugin"
+include "ls"
+include "vscode"
