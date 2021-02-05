@@ -3,9 +3,11 @@
  */
 package se.slackers.stml;
 
+import picocli.AutoComplete;
 import picocli.CommandLine;
 import se.slackers.stml.command.CompileCommand;
 import se.slackers.stml.command.GenerateCommand;
+import se.slackers.stml.command.WatchCommand;
 import se.slackers.stml.mapper.SourcePositionId;
 
 import java.io.IOException;
@@ -19,7 +21,7 @@ import static java.lang.System.err;
 @CommandLine.Command(
         name = "stml",
         versionProvider = VersionProvider.class,
-        subcommands = {CommandLine.HelpCommand.class}
+        subcommands = {CommandLine.HelpCommand.class, AutoComplete.GenerateCompletion.class}
 )
 public class Main implements Callable<Integer> {
     static {
@@ -38,8 +40,9 @@ public class Main implements Callable<Integer> {
 
         System.exit(new CommandLine(new Main())
                 .setExecutionExceptionHandler(new STMLExceptionHandler())
-                .addSubcommand(new CompileCommand())
                 .addSubcommand(new GenerateCommand())
+                .addSubcommand(new CompileCommand())
+                .addSubcommand(new WatchCommand())
                 .execute(args));
     }
 

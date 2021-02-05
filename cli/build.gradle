@@ -103,7 +103,5 @@ jar.dependsOn copyInstaller
 copyScripts.dependsOn processResources
 copyInstaller.dependsOn processResources
 buildInstaller.dependsOn copyInstaller
-/*
 buildInstaller.dependsOn nativeImage
 build.finalizedBy buildInstaller
-*/

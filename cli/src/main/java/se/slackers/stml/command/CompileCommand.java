@@ -51,8 +51,16 @@ public class CompileCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"--fail-fast"}, description = "abort compilation on the first file with errors")
     private boolean failFast = false;
 
+    public CompileCommand() {
+    }
+
+    public CompileCommand(File inputFiles, File output) {
+        this.inputFiles = new File[]{inputFiles};
+        this.output = output;
+    }
+
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         if (inputFiles == null || inputFiles.length == 0) {
             throw new CLIException("No input files specified", true);
         }

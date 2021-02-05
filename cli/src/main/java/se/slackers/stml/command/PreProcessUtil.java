@@ -28,6 +28,8 @@ public class PreProcessUtil {
 
             if (inputFile.isDirectory()) {
                 fileList.addAll(handleDirectory(inputFile, recursiveRead));
+            } else {
+                fileList.add(Pair.of(inputFile, inputFile.getName()));
             }
         }
 

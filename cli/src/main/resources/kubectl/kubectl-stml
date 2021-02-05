@@ -29,7 +29,7 @@ function help() {
     echo "Installation:"
     echo "Install the plugin by copying it to the path with the name \"kubectl-stml\""
     echo ""
-    echo "    stml --kubectl | sudo tee /usr/local/bin/kubectl-stml"
+    echo "    stml generate-kubectl | sudo tee /usr/local/bin/kubectl-stml"
     echo "    sudo chmod +x /usr/local/bin/kubectl-stml"
     echo ""
 }
@@ -83,7 +83,7 @@ if [ "$1" == "apply" ]; then
         FILENAME=$(basename "$FILE")
         OUTPUT="$TEMP_FOLDER/$FILENAME"        
         echo "compiling $FILE"
-        stml -o "$OUTPUT" "$FILE"
+        stml compile "$FILE" -o "$OUTPUT"
         kubectl apply -f "$OUTPUT" $ARGS
         exit $?
     elif [ -n "$DIR" ]; then
@@ -95,11 +95,11 @@ if [ "$1" == "apply" ]; then
         DIR=$(readlink -f $DIR)
         FILES=$(ls $DIR/*.stml)
 
-        stml -o "$TEMP_FOLDER" -s "$FILES"
+        stml compile "$FILES" -o "$TEMP_FOLDER"
         kubectl apply -k "$TEMP_FOLDER" $ARGS
         exit $?
     else
-        echo "ERROR: None of the required flags -f and -d were specied!"
+        echo "ERROR: None of the required flags -f and -d were specified!"
         echo ""
         help 
         exit 1
@@ -112,6 +112,6 @@ exit 1
 #
 # Install using:
 #
-#    stml --kubectl | sudo tee /usr/local/bin/kubectl-stml
+#    stml generate-kubectl | sudo tee /usr/local/bin/kubectl-stml
 #    sudo chmod +x /usr/local/bin/kubectl-stml
 #

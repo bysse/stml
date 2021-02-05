@@ -7,9 +7,9 @@ type constructors.
 
 The CLI tool is the main entrypoint for STML manipulation. The most useful flag is
 to invoke it with `-h` to get the help screen. The second most useful flag is to
-generate auto completion for your shell (only bash supported).
+generate auto completion for the shell (only bash/zsh supported).
 
-    source <(stml -c bash)
+    source <(stml generate-completion)
 
 
 The third most useful flag is `--kubectl` which generates the kubectl plugin script. 
