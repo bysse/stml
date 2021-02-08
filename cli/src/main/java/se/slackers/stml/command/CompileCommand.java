@@ -45,9 +45,6 @@ public class CompileCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"-r", "--recurse"}, description = "recurse through input directories")
     private boolean recursiveRead = false;
 
-    @CommandLine.Option(names = {"-s", "--silent"}, description = "produce no output")
-    private boolean silent = false;
-
     @CommandLine.Option(names = {"--fail-fast"}, description = "abort compilation on the first file with errors")
     private boolean failFast = false;
 
@@ -89,10 +86,6 @@ public class CompileCommand implements Callable<Integer> {
                     if (failFast) {
                         throw new CLIException("Compilation errors during compilation");
                     }
-                }
-
-                if (silent) {
-                    logger.info("No output is generated due to the --silent command line flag");
                     continue;
                 }
 

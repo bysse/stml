@@ -6,7 +6,9 @@ import se.slackers.stml.VersionProvider;
 
 import java.io.File;
 import java.nio.file.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -21,6 +23,8 @@ import java.util.logging.Logger;
 public class WatchCommand implements Callable<Integer> {
     static final Logger logger = Logger.getLogger(WatchCommand.class.getName());
 
+    private Map<Path, Long> recompilationBlock = new HashMap<>();
+
     @CommandLine.Parameters(index = "0", paramLabel = "directory")
     private File directory;
 
@@ -29,6 +33,7 @@ public class WatchCommand implements Callable<Integer> {
 
     @CommandLine.Option(names = {"-o", "--output"}, description = "output directory")
     private File output;
+
 
     @Override
     public Integer call() throws Exception {
@@ -47,6 +52,11 @@ public class WatchCommand implements Callable<Integer> {
             output = directory;
         } else {
             Path outputPath = output.toPath();
+            if (!Files.exists(outputPath)) {
+                if (!output.mkdirs()) {
+                    throw new CLIException("Failed to create output directory");
+                }
+            }
             if (!Files.isDirectory(outputPath) || !Files.isWritable(outputPath)) {
                 throw new CLIException("Output directory is not writable");
             }
@@ -59,18 +69,19 @@ public class WatchCommand implements Callable<Integer> {
                 StandardWatchEventKinds.ENTRY_DELETE,
                 StandardWatchEventKinds.ENTRY_MODIFY);
 
-        // perform an initial scan of the folder
-        Files.list(root).forEach(this::handleFile);
+           try {
+            System.out.printf("Watching %s for changes\n", root);
 
-        try {
-            System.err.printf("Watching %s for changes\n", root);
+           // perform an initial scan of the folder
+           Files.list(root).forEach(this::handleFile);
+
             while (true) {
                 // check watch service for filesystem changes
                 WatchKey key = watchService.poll(1000, TimeUnit.MILLISECONDS);
                 if (key == null) {
                     continue;
                 }
-                readAndNotifyChange(key.pollEvents());
+                readAndNotifyChange(root, key.pollEvents());
                 key.reset();
             }
         } catch (InterruptedException e) {
@@ -82,7 +93,7 @@ public class WatchCommand implements Callable<Integer> {
     }
 
     @SuppressWarnings("unchecked")
-    private void readAndNotifyChange(List<WatchEvent<?>> events) {
+    private void readAndNotifyChange(Path directory, List<WatchEvent<?>> events) {
         for (WatchEvent<?> event : events) {
             if (event.kind() == StandardWatchEventKinds.OVERFLOW) {
                 // discard
@@ -92,7 +103,7 @@ public class WatchCommand implements Callable<Integer> {
             WatchEvent<Path> pathEvent = (WatchEvent<Path>) event;
             Path path = pathEvent.context();
             if (path != null) {
-                handleFile(path);
+                handleFile(directory.resolve(path));
             }
         }
     }
@@ -101,11 +112,23 @@ public class WatchCommand implements Callable<Integer> {
         if (!Files.isRegularFile(path)) {
             return;
         }
+        final String filename = path.getFileName().toString().toLowerCase();
+        if (!filename.endsWith(".stml")) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        if (now - recompilationBlock.getOrDefault(path, 0L) < 1000) {
+            return;
+        }
+        recompilationBlock.put(path, now);
+
         try {
+            System.out.println("* Compiling " + path);
             CompileCommand compileCommand = new CompileCommand(path.toFile(), output);
             compileCommand.call();
         } catch (CLIException e) {
-            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 }

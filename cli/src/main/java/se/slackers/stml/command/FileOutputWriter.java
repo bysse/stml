@@ -18,17 +18,27 @@ public class FileOutputWriter {
 
     public FileOutputWriter(File destination) {
         this.destinationPath = destination.toPath();
-        this.directoryMode = destination.isDirectory();
+
+        if (!Files.exists(destinationPath)) {
+            if (!destination.getName().contains(".")) {
+                if (!destination.mkdirs()) {
+                    throw new CLIException("Destination directory is not writable : " + destinationPath.toAbsolutePath());
+                }
+            }
+        }
 
         if (destination.isDirectory()) {
-            if (!destination.exists()) {
-                destination.mkdirs();
-            }
-
             if (!Files.isWritable(destinationPath)) {
                 throw new CLIException("Destination directory is not writable : " + destinationPath.toAbsolutePath());
             }
+            directoryMode = true;
+        } else {
+            directoryMode = false;
         }
+    }
+
+    public boolean isDirectoryMode() {
+        return directoryMode;
     }
 
     public void write(Path path, String content) throws IOException {
