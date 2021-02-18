@@ -42,7 +42,7 @@ public class YamlVisitor extends STMLBaseVisitor<Void> {
 
     @Override
     public Void visitEmit_statement(STMLParser.Emit_statementContext ctx) {
-        if (linebreak) {
+        if (!output.endsWithNewLine()) {
             output.newLine();
         }
         output.newStructure();
@@ -52,6 +52,41 @@ public class YamlVisitor extends STMLBaseVisitor<Void> {
         super.visitEmit_statement(ctx);
         emit = false;
 
+        return null;
+    }
+
+    @Override
+    public Void visitParseString(STMLParser.ParseStringContext ctx) {
+        TypedValue typedValue = registry.getNodeValueMap().get(ctx);
+        emitValue(typedValue, "");
+        return null;
+    }
+
+    @Override
+    public Void visitParseInteger(STMLParser.ParseIntegerContext ctx) {
+        TypedValue typedValue = registry.getNodeValueMap().get(ctx);
+        emitValue(typedValue, "");
+        return null;
+    }
+
+    @Override
+    public Void visitParseFloat(STMLParser.ParseFloatContext ctx) {
+        TypedValue typedValue = registry.getNodeValueMap().get(ctx);
+        emitValue(typedValue, "");
+        return null;
+    }
+
+    @Override
+    public Void visitParseBoolean(STMLParser.ParseBooleanContext ctx) {
+        TypedValue typedValue = registry.getNodeValueMap().get(ctx);
+        emitValue(typedValue, "");
+        return null;
+    }
+
+    @Override
+    public Void visitParseNull(STMLParser.ParseNullContext ctx) {
+        TypedValue typedValue = registry.getNodeValueMap().get(ctx);
+        emitValue(typedValue, "");
         return null;
     }
 

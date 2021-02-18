@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 @CommandLine.Command(
         name = "watch",
@@ -21,9 +20,7 @@ import java.util.logging.Logger;
 )
 
 public class WatchCommand implements Callable<Integer> {
-    static final Logger logger = Logger.getLogger(WatchCommand.class.getName());
-
-    private Map<Path, Long> recompilationBlock = new HashMap<>();
+    private final Map<Path, Long> recompilationBlock = new HashMap<>();
 
     @CommandLine.Parameters(index = "0", paramLabel = "directory")
     private File directory;

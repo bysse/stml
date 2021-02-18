@@ -37,7 +37,9 @@ public class PreProcessor {
     }
 
     public void process(Path path) throws STMLException {
-        this.path = path;
+        if (this.path == null) {
+            this.path = path;
+        }
         logger.info("Processing file " + path.toAbsolutePath());
         appendFile(content, path, null);
     }

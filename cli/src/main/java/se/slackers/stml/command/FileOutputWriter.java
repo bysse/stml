@@ -14,10 +14,12 @@ public class FileOutputWriter {
     private static final Logger logger = Logger.getLogger(FileOutputWriter.class.getName());
 
     private final Path destinationPath;
+    private final boolean disregardDirectory;
     private final boolean directoryMode;
 
-    public FileOutputWriter(File destination) {
+    public FileOutputWriter(File destination, boolean disregardDirectory) {
         this.destinationPath = destination.toPath();
+        this.disregardDirectory = disregardDirectory;
 
         if (!Files.exists(destinationPath)) {
             if (!destination.getName().contains(".")) {
@@ -42,6 +44,9 @@ public class FileOutputWriter {
     }
 
     public void write(Path path, String content) throws IOException {
+        if (disregardDirectory) {
+            path = path.getFileName();
+        }
         if (path.isAbsolute()) {
             if (path.getFileName() == null) {
                 throw new IllegalStateException("Path contains no filename : " + path);
@@ -53,19 +58,22 @@ public class FileOutputWriter {
             Path output = switchExtension(destinationPath.resolve(path));
             writeToFile(output, content);
         } else {
-            writeToFile(path, content);
+            try {
+                logger.info("Writing YAML to " + destinationPath.toAbsolutePath());
+                Files.write(destinationPath, content.getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                throw new IOException("Failed to write to file : " + path.toAbsolutePath() + " : " + e.getMessage(), e);
+            }
         }
     }
 
     private void writeToFile(Path path, String content) throws IOException {
         Path directory = path.getParent();
-        if (directory == null) {
-            throw new IllegalStateException("Parent directory is null : " + path);
-        }
-
-        if (!Files.exists(directory)) {
-            if (!directory.toFile().mkdirs()) {
-                throw new CLIException("Failed to create directory : " + directory);
+        if (directory != null) {
+            if (!Files.exists(directory)) {
+                if (!directory.toFile().mkdirs()) {
+                    throw new CLIException("Failed to create directory : " + directory);
+                }
             }
         }
 

@@ -128,4 +128,11 @@ public class Output {
     public void writeListItem() {
         output.append("- ");
     }
+
+    public boolean endsWithNewLine() {
+        if (output.length() > 0) {
+            return '\n' == output.charAt(output.length()-1);
+        }
+        return true;
+    }
 }

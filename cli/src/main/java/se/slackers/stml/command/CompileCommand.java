@@ -65,7 +65,7 @@ public class CompileCommand implements Callable<Integer> {
         // check output
         FileOutputWriter outputWriter = null;
         if (output != null) {
-            outputWriter = new FileOutputWriter(output);
+            outputWriter = new FileOutputWriter(output, mergeInputs);
         }
 
         // process input
