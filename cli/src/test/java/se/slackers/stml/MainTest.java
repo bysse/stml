@@ -81,7 +81,7 @@ class MainTest {
 
     @Test
     @DisplayName("Compile multiple files")
-    void testCompile_7() {
+    void testCompile_6() {
         execute(() ->
                 Main.main(new String[]{"compile",
                         TESTBED + "/compile/stml_1.stml",
@@ -95,7 +95,7 @@ class MainTest {
 
     @Test
     @DisplayName("Compile multiple files and merge")
-    void testCompile_8() {
+    void testCompile_7() {
         execute(() -> {
             Path path = baseDir.toPath().resolve("subdir").toAbsolutePath();
             Main.main(new String[]{"compile",
@@ -111,7 +111,7 @@ class MainTest {
 
     @Test
     @DisplayName("Compile multiple files and merge to specified file")
-    void testCompile_9() {
+    void testCompile_8() {
         execute(() -> {
                     Path path = baseDir.toPath().resolve("merged.yaml").toAbsolutePath();
                     Main.main(new String[]{"compile",
@@ -125,6 +125,23 @@ class MainTest {
         validateFile("merged.yaml", "---\nSTML1\n---\nSTML2");
     }
 
+    @Test
+    @DisplayName("Compile directory recursively")
+    void testCompile_9() {
+        execute(() -> Main.main(new String[]{"compile", TESTBED, "-r", "-o", baseDir.getAbsolutePath()}));
+
+        validateFile("compile/stml_1.yaml", "---\nSTML1");
+        validateFile("compile/stml_2.yaml", "---\nSTML2");
+        validateFile("stml_3.yaml", "---\nSTML3");
+    }
+
+    @Test
+    @DisplayName("Compile directory recursively and merge")
+    void testCompile_10() {
+        execute(() -> Main.main(new String[]{"compile", TESTBED, "-r", "-m", "-o", baseDir.getAbsolutePath()}));
+
+        validateFile("stml_1.yaml", "---\nSTML1\n---\nSTML2\n---\nSTML3");
+    }
 
     private void execute(Executable executable) {
         assertThrows(SecurityException.class, executable, "No system exit encountered");
