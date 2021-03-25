@@ -4,7 +4,7 @@ when reading and writing YAML.
 
 ## History
 During a recent trainig where there were extensive usage of YAML I started to question the survival of our species. If YAML was the pinnacle of humanity's effort to write configuration, what chances do we really have at solving the climate crisis?
-In a desperate attempt at proving my self wrong and making the world a better place I started writing STML. It was supprisingly easy to make something that I percieved to be far superior to YAML. If I could do it in a couple of weeks. Imagine what a well resourced organization could do! 
+In a desperate attempt at proving myself wrong and making the world a better place I started writing STML. It was supprisingly easy to make something that I percieved to be far superior to YAML. If I could do it in a couple of weeks. Imagine what a well resourced organization could do! 
 Are you up for the challange? 
 A YAML free world is within reach. 
 If we work together.
