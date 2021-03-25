@@ -3,6 +3,8 @@ package se.slackers.stml.parser;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import se.slackers.stml.mapper.SourcePosition;
+import se.slackers.stml.mapper.SourcePositionId;
 import se.slackers.stml.mapper.SourcePositionMapper;
 import se.slackers.stml.preprocessor.Source;
 import se.slackers.stml.yaml.YamlVisitor;
@@ -23,17 +25,24 @@ public class SnippetConversionTest {
                 arguments("emit true;", "true"),
                 arguments("emit null;", "null"),
 
-                arguments("emit 1;\nemit 2", "1\n---\n2")
+                arguments("emit 1;\nemit 2", "1\n---\n2"),
+
+                arguments("struct A {\nv:const:\"v1\",b:string}\n emit A(b:\"b\");", "v: v1\nb: b"),
+                arguments("struct A {\nv:Map(a:1),b:string}\n emit A(b:\"b\");", "v: \n  a: 1\nb: b"),
+                arguments("struct A {\nv:List:[1,2,3],b:string}\n emit A(b:\"b\");", "v: \n- 1\n- 2\n- 3\nb: b")
         );
     }
 
     @ParameterizedTest
     @MethodSource("getSnippets")
     void testSnippets(String stml, String yaml) {
+        SourcePositionMapper mapper = new SourcePositionMapper();
+        mapper.remap(SourcePosition.TOP, SourcePositionId.DEFAULT);
+
         Source source = new Source(
                 stml,
                 Paths.get("."),
-                new SourcePositionMapper()
+                mapper
         );
 
         Parser parser = new Parser();

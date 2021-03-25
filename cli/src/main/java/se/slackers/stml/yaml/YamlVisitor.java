@@ -135,6 +135,8 @@ public class YamlVisitor extends STMLBaseVisitor<Void> {
     }
 
     private void emitValue(TypedValue typedValue, String indentation) {
+        if (!emit) return;
+
         switch (typedValue.getType().getTypeClass()) {
             case ANY:
             case NULL:
