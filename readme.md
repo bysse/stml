@@ -2,6 +2,13 @@
 STML is a meta-language with the sole purpose of reducing the pain you feel inside
 when reading and writing YAML.
 
+## History
+During a recent trainig where there were extensive usage of YAML I started to question our species. If YAML was the pinnacle of humanity's effort to write configuration, what chances do we really have at solving the climate crisis?
+In a desperate attempt at proving my self wrong and making the world a better place I started writing STML. It was supprisingly easy to make something that I percieved to be far superior to YAML. If I could do it in a couple of weeks. Imagine what a well resourced organization could do! 
+Are you up for the challange? 
+A YAML free world is within reach. 
+If we work together.
+
 ## Features
 ### Statically typed
 All fields and structs have a type. Wrong usage of types will result in compilation errors.
