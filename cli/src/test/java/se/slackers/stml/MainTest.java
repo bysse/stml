@@ -1,6 +1,7 @@
 package se.slackers.stml;
 
 import com.ginsberg.junit.exit.SystemExitExtension;
+import com.ginsberg.junit.exit.SystemExitPreventedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -144,7 +145,7 @@ class MainTest {
     }
 
     private void execute(Executable executable) {
-        assertThrows(SecurityException.class, executable, "No system exit encountered");
+        assertThrows(SystemExitPreventedException.class, executable, "No system exit encountered");
     }
 
     private void validateFile(String filename, String contents) {
