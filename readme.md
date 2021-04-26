@@ -34,4 +34,5 @@ to be forgiving to the user.
 ## Modules
 ### cli
 [Language definition and CLI tool.](https://github.com/bysse/stml/tree/master/cli)
+
 [A small kubernetes example.](https://github.com/bysse/stml/tree/master/types/k8s)
