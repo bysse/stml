@@ -9,6 +9,9 @@ Are you up for the challange?
 A YAML free world is within reach. 
 If we work together.
 
+### Disclaimer
+STML is not mature enough for any type of production use. The test suite is serverly lacking and not even all base functionality is tested thoroughly. 
+
 ## Features
 ### Statically typed
 All fields and structs have a type. Wrong usage of types will result in compilation errors.
