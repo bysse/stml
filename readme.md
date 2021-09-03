@@ -1,6 +1,6 @@
 # Structured Typed Meta-Language
 STML is a meta-language with the sole purpose of reducing the pain you feel inside
-when reading and writing YAML.
+when reading and writing YAML. The language definition can be found in the [cli module](https://github.com/bysse/stml/tree/master/cli). For non technical features keep reading.
 
 ## History
 During a recent training where there were extensive usage of YAML I started to question the survival of our species. If YAML was the pinnacle of humanity's effort to write configuration, what chances do we really have at solving the climate crisis?
